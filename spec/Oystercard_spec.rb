@@ -5,6 +5,8 @@ describe Oystercard do
     expect(subject).to be_kind_of(Oystercard)
   end
 
+  let(:station) { double('station double') }
+
   it 'responds to the method balance' do
     expect(subject).to respond_to(:balance)
   end
@@ -38,19 +40,19 @@ describe Oystercard do
   # end
 
   it 'responds to the method touch_in' do
-    expect(subject).to respond_to(:touch_in)
+    expect(subject).to respond_to(:touch_in).with(1).argument
   end
 
   describe '#touch_in' do
     it 'sets card state to in journey' do
       subject.top_up(Oystercard::FARELIMIT)
-      subject.touch_in
-      expect(subject.state).to eq true
+      subject.touch_in(station)
+      expect(subject.start_station).to eq station
     end
 
     it 'raises an error when balance is below 1' do
       message = "Not enough funds"
-      expect { subject.touch_in }.to raise_error message
+      expect { subject.touch_in(station) }.to raise_error message
     end
   end
 
@@ -58,10 +60,18 @@ describe Oystercard do
     expect(subject).to respond_to(:in_journey?)
   end
 
+
+  it 'it remembers the start station' do
+    subject.top_up(Oystercard::FARELIMIT)
+    subject.touch_in(station)
+    expect(subject.start_station).to eq station
+  end
+
+
   describe '#in_journey?' do
     it 'returns true when in journey' do
       subject.top_up(Oystercard::FARELIMIT)
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject).to be_in_journey
     end
 
@@ -77,16 +87,24 @@ describe Oystercard do
   describe '#touch_out' do
     it 'sets card state to not in journey' do
       subject.top_up(Oystercard::FARELIMIT)
-      subject.touch_in
+      subject.touch_in(station)
       subject.touch_out
-      expect(subject.state).to eq false
+      expect(subject.start_station).to eq nil
     end
 
     it 'it deducts FARELIMIT from balance' do
       subject.top_up(Oystercard::FARELIMIT)
-      subject.touch_in
+      subject.touch_in(station)
       expect { subject.touch_out }.to change{ subject.balance }.by(-Oystercard::FARELIMIT)
     end
+
+    it 'forgets the start station' do
+      subject.top_up(Oystercard::FARELIMIT)
+      subject.touch_in(station)
+      subject.touch_out
+      expect(subject.start_station).to eq nil
+    end
   end
+
 
 end
