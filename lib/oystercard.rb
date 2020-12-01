@@ -15,10 +15,6 @@ FARELIMIT = 1
     @balance += amount
   end
 
-  def deduct(amount)
-    @balance -= amount
-  end
-
   def touch_in
     raise "Not enough funds" if @balance < @fare_limit
 
@@ -30,7 +26,13 @@ FARELIMIT = 1
   end
 
   def touch_out
+    deduct(@fare_limit)
     @state = false
   end
 
+  private
+
+  def deduct(amount)
+    @balance -= amount
+  end
 end

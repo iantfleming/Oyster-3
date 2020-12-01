@@ -29,13 +29,13 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it 'reduces balance by amount' do
-      subject.top_up(50)
-      subject.deduct(5)
-      expect(subject.balance).to eq 45
-    end
-  end
+  # describe '#deduct' do
+  #   it 'reduces balance by amount' do
+  #     subject.top_up(50)
+  #     subject.deduct(5)
+  #     expect(subject.balance).to eq 45
+  #   end
+  # end
 
   it 'responds to the method touch_in' do
     expect(subject).to respond_to(:touch_in)
@@ -80,6 +80,12 @@ describe Oystercard do
       subject.touch_in
       subject.touch_out
       expect(subject.state).to eq false
+    end
+
+    it 'it deducts FARELIMIT from balance' do
+      subject.top_up(Oystercard::FARELIMIT)
+      subject.touch_in
+      expect { subject.touch_out }.to change{ subject.balance }.by(-Oystercard::FARELIMIT)
     end
   end
 
