@@ -43,8 +43,14 @@ describe Oystercard do
 
   describe '#touch_in' do
     it 'sets card state to in journey' do
+      subject.top_up(Oystercard::FARELIMIT)
       subject.touch_in
       expect(subject.state).to eq true
+    end
+
+    it 'raises an error when balance is below 1' do
+      message = "Not enough funds"
+      expect { subject.touch_in }.to raise_error message
     end
   end
 
@@ -54,6 +60,7 @@ describe Oystercard do
 
   describe '#in_journey?' do
     it 'returns true when in journey' do
+      subject.top_up(Oystercard::FARELIMIT)
       subject.touch_in
       expect(subject).to be_in_journey
     end
@@ -69,6 +76,7 @@ describe Oystercard do
 
   describe '#touch_out' do
     it 'sets card state to not in journey' do
+      subject.top_up(Oystercard::FARELIMIT)
       subject.touch_in
       subject.touch_out
       expect(subject.state).to eq false

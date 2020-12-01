@@ -1,10 +1,12 @@
 class Oystercard
 attr_reader :balance, :state
 LIMIT = 90
+FARELIMIT = 1
 
   def initialize
     @balance = 0
     @state = false
+    @fare_limit = FARELIMIT
   end
 
   def top_up(amount)
@@ -18,6 +20,8 @@ LIMIT = 90
   end
 
   def touch_in
+    raise "Not enough funds" if @balance < @fare_limit
+
     @state = true
   end
 
