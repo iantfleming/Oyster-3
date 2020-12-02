@@ -35,22 +35,27 @@ DEFAULT_BALANCE = 0
     @in_journey = false
     @exit_station = station
     last_journey
+    complete_journey?
     #@journeys[-1].push(station) #new
     @start_station = nil
     @exit_station = nil
     #@journeys[-1].to_h #new
   end
 
+  def complete_journey?
+    @journeys[-1].has_value?(nil)
+  end
 
 
   private
 
+  def last_journey
+    journey = { :start_station => @start_station, :exit_station => @exit_station }
+    @journeys << journey
+  end
+
+
   def deduct(amount)
     @balance -= amount
   end
-
-  def last_journey
-    @journeys << { :start_station => @start_station, :exit_station => @exit_station }
-  end
-
 end
