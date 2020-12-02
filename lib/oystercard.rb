@@ -1,10 +1,11 @@
 class Oystercard
-attr_reader :balance, :state, :start_station, :journeys
+attr_reader :balance, :start_station, :journeys, :exit_station
 LIMIT = 90
 FARELIMIT = 1
+DEFAULT_BALANCE = 0
 
-  def initialize
-    @balance = 0
+  def initialize(balance=DEFAULT_BALANCE)
+    @balance = balance
     @fare_limit = FARELIMIT
     @start_station = nil
     @journeys = []
@@ -25,21 +26,31 @@ FARELIMIT = 1
   end
 
   def in_journey?
-    @start_station
+    @start_station.nil? ? false : true
     #@journeys.length > 0 ? @journeys[-1].length == 1 : false #new
   end
 
   def touch_out(station)
-    deduct(@fare_limit)
+    deduct(FARELIMIT)
+    @in_journey = false
+    @exit_station = station
+    last_journey
     #@journeys[-1].push(station) #new
-    @journeys.push({@start_station => station})
     @start_station = nil
+    @exit_station = nil
     #@journeys[-1].to_h #new
   end
+
+
 
   private
 
   def deduct(amount)
     @balance -= amount
   end
+
+  def last_journey
+    @journeys << { :start_station => @start_station, :exit_station => @exit_station }
+  end
+
 end

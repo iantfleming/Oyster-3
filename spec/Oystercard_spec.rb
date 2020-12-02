@@ -1,7 +1,13 @@
 require 'oystercard'
 describe Oystercard do
+  subject(:card) { Oystercard.new }
   let(:station) { double('station double') }
   let(:station1) { double('station double') }
+
+  it 'has a default balance' do
+    # oystercard = Oystercard.new
+    expect(subject.balance).to eq Oystercard::DEFAULT_BALANCE
+  end
 
   it 'can create an instance of oystercard' do
     expect(subject).to be_kind_of(Oystercard)
@@ -103,7 +109,7 @@ describe Oystercard do
       subject.top_up(Oystercard::FARELIMIT)
       subject.touch_in(station)
       subject.touch_out(station1)
-      expect(subject.journeys).to include({station => station1})
+      expect(subject.journeys).to include({:start_station => station, :exit_station => station1})
     end
   end
 end
