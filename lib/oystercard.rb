@@ -1,14 +1,16 @@
+require_relative 'journey'
+
 class Oystercard
-attr_reader :balance, :start_station, :journeys, :exit_station
+attr_reader :balance, :journey
 LIMIT = 90
-FARELIMIT = 1
+# STANDARD_FARE = 1
 DEFAULT_BALANCE = 0
 
   def initialize(balance=DEFAULT_BALANCE)
     @balance = balance
-    @fare_limit = FARELIMIT
-    @start_station = nil
-    @journeys = []
+    # @fare_limit = STANDARD_FARE
+    # @start_station = nil
+    # @journeys = []
   end
 
   def top_up(amount)
@@ -18,42 +20,39 @@ DEFAULT_BALANCE = 0
   end
 
   def touch_in(station)
-    raise "Not enough funds" if @balance < @fare_limit
+    raise "Not enough funds" if @balance < Journey::STANDARD_FARE
+    @journey = Journey.new
 
-    #@journeys.push([station]) #new
-    @start_station = station
-    station
+    @journey.start_station = station
+    # station
   end
 
-  def in_journey?
-    @start_station.nil? ? false : true
-    #@journeys.length > 0 ? @journeys[-1].length == 1 : false #new
-  end
+  # def in_journey?
+  #   @start_station.nil? ? false : true
+  # end
 
   def touch_out(station)
-    deduct(FARELIMIT)
-    @in_journey = false
-    @exit_station = station
-    last_journey
-    complete_journey?
-    #@journeys[-1].push(station) #new
-    @start_station = nil
-    @exit_station = nil
-    #@journeys[-1].to_h #new
+    # @journey.in_journey? = false
+    @journey.exit_station = station
+    @journey.last_journey
+    @journey.complete_journey?
+    deduct(@journey.fare_total)
+    @journey.start_station = nil
+    @journey.exit_station = nil
   end
 
-  def complete_journey?
-    @journeys[-1].has_value?(nil)
-  end
+  # def complete_journey?
+  #   @journeys[-1].has_value?(nil)
+  # end
 
 
+  # private
+  #
+  # def last_journey
+  #   journey = { :start_station => @start_station, :exit_station => @exit_station }
+  #   @journeys << journey
+  # end
   private
-
-  def last_journey
-    journey = { :start_station => @start_station, :exit_station => @exit_station }
-    @journeys << journey
-  end
-
 
   def deduct(amount)
     @balance -= amount
