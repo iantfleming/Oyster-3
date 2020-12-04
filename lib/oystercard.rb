@@ -1,7 +1,7 @@
 require_relative 'journey'
 
 class Oystercard
-attr_reader :balance, :journey
+attr_reader :balance, :journey, :start_station
 LIMIT = 90
 # STANDARD_FARE = 1
 DEFAULT_BALANCE = 0
@@ -9,7 +9,7 @@ DEFAULT_BALANCE = 0
   def initialize(balance=DEFAULT_BALANCE)
     @balance = balance
     # @fare_limit = STANDARD_FARE
-    # @start_station = nil
+    @start_station = nil
     # @journeys = []
   end
 

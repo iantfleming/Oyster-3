@@ -20,7 +20,6 @@ class Journey
 
   def complete_journey?
     !@journeys[-1].has_value?(nil)
-
   end
 
   def fare_total

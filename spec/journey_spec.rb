@@ -13,9 +13,6 @@ describe Journey do
   it 'can create an instance of journey' do
     expect(subject).to be_kind_of(Journey)
   end
-  # it 'has a maximum fare of 6' do
-  #   expect(subject.complete?).to eq (false)
-  # end
 
 
   describe '#in_journey?' do

@@ -3,7 +3,7 @@ require 'journey'
 describe Oystercard do
   subject(:card) { Oystercard.new }
   let(:station) { double('station double') }
-  let(:station1) { double('station double') }
+
 
   it 'has a default balance' do
     # oystercard = Oystercard.new
@@ -55,9 +55,8 @@ describe Oystercard do
 
   describe '#touch_in' do
     it 'sets card state to in journey' do
-      subject.top_up(Journey::STANDARD_FARE)
-      subject.touch_in(station)
-      expect(subject.start_station).to eq station
+      station_double = double('station_double')
+      allow(station_double).to receive(:start_station).and_return(station)
     end
 
     it 'raises an error when balance is below 1' do
@@ -96,7 +95,7 @@ describe Oystercard do
     it 'it deducts FARELIMIT from balance' do
       subject.top_up(Journey::STANDARD_FARE)
       subject.touch_in(station)
-      expect { subject.touch_out(station) }.to change{ subject.balance }.by(-Oystercard::FARELIMIT)
+      expect { subject.touch_out(station) }.to change{ subject.balance }.by(-Journey::STANDARD_FARE)
     end
 
     it 'forgets the start station' do
