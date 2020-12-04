@@ -57,6 +57,7 @@ describe Oystercard do
     it 'sets card state to in journey' do
       station_double = double('station_double')
       allow(station_double).to receive(:start_station).and_return(station)
+      expect(station_double.start_station).to eq station
     end
 
     it 'raises an error when balance is below 1' do
